@@ -4,17 +4,15 @@ import toast from "react-hot-toast";
 import { Box, Button, InputLabel, TextField, Typography } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
 const BlogDetails = () => {
-  const [blog, setBlog] = useState({});
-  const id = useParams().id;
+   const id = useParams().id;
   const navigate = useNavigate();
   const [inputs, setInputs] = useState({});
 
-  // get blog details
-  const getBlogDetail = async () => {
+   // get blog details
+  const getBlogDetail = useCallback(async () => {
     try {
       const { data } = await axios.get(`/api/v1/blog/get-blog/${id}`);
       if (data?.success) {
-        setBlog(data?.blog);
         setInputs({
           title: data?.blog.title,
           description: data?.blog.description,
@@ -24,10 +22,11 @@ const BlogDetails = () => {
     } catch (error) {
       toast.error(error);
     }
-  };
+  }, [id]);
+
   useEffect(() => {
     getBlogDetail();
-  }, [id]);
+  }, [id, getBlogDetail]);
 
   // input change
   const handleChange = (e) => {
